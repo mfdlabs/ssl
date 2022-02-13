@@ -1,0 +1,28 @@
+# Configuration for the Legacy Vantiv Ark Testers (VANTIV_ARK_TESTERS_OLD_OPS)
+root_ca:
+  - $ref: ./root_certificates/test-sector-v2.yml
+leaf_certificate:
+  - name: v-ark-testers
+    ca_name: test-sector-v2
+    ca_password: ${{ env.test_sector_v2_password }}
+    is_ca_root_ca: true
+    password: ${{ env.v_ark_testers_password }}
+    pfx_password: ${{ env.v_ark_testers_pfx_password }}
+    generate_dhparam: true
+    overwrite_config: true
+    config:
+      country: US
+      organization: MFDLABS Corporation
+      organizational_unit: Vantiv Ark Tester VMs
+      common_name: "*.ark-v.mfdlabs.local"
+      critical_basic_constraints: true
+      subject_alternative_name:
+        dns_names:
+          - "ark-v.mfdlabs.local"
+          - "*.ark-v.mfdlabs.local"
+          - "ark-v-integration.mfdlabs.local"
+          - "*.ark-v-integration.mfdlabs.local"
+          - "api.ark-v.mfdlabs.local"
+          - "*.api.ark-v.mfdlabs.local"
+          - "api.ark-v-integration.mfdlabs.local"
+          - "*.api.ark-v-integration.mfdlabs.local"

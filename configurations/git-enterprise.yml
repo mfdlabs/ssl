@@ -1,0 +1,22 @@
+# Configuration for a Github Enterprise Server
+root_ca:
+  - $ref: ./root_certificates/github-sector-v2.yml
+leaf_certificate:
+  - name: git-enterprise
+    ca_name: github-sector-v2
+    ca_password: ${{ env.github_sector_v2_password }}
+    is_ca_root_ca: true
+    password: ${{ env.git_enterprise_password }}
+    pfx_password: ${{ env.git_enterprise_pfx_password }}
+    generate_dhparam: true
+    overwrite_config: true
+    config:
+      common_name: "*.git.mfdlabs.local"
+      critical_basic_constraints: true
+      critical_key_usage: true
+      policies: 
+        - 2.23.140.1.2.1
+      subject_alternative_name:
+        dns_names:
+          - "git.mfdlabs.local"
+          - "*.git.mfdlabs.local"

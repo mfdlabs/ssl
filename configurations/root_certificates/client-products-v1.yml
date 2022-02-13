@@ -1,0 +1,16 @@
+# MFDLABS Client Products Team CA
+name: client-products-v1
+password: ${{ env.client_products_v1_password }}
+pfx_password: ${{ env.client_products_v1_pfx_password }}
+has_extension_file: true
+generate_dhparam: true
+overwrite_config: true
+config:
+  country: US
+  state: California
+  locality: Los Angeles
+  organization: MFDLABS
+  organizational_unit: Client Management
+  common_name: MFDLABS Client Products Team CA
+  email: ca+client-products-team@vmminfra.net
+  critical_basic_constraints: true

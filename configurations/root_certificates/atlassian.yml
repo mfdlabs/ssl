@@ -1,0 +1,14 @@
+# ATLASSIAN
+name: atlassian
+password: ${{ env.atlassian_password }}
+pfx_password: ${{ env.atlassian_pfx_password }}
+has_extension_file: true
+generate_dhparam: true
+overwrite_config: true
+config:
+  country: US
+  organization: MFDLABS
+  organizational_unit: Atlassian Project Management Internal
+  common_name: ATLASSIAN
+  email: at-projects@mfdlabs.local
+  critical_basic_constraints: true

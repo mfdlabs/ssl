@@ -1,0 +1,15 @@
+# roblox-COU1-AD1-CA
+name: roblox
+password: ${{ env.roblox_password }}
+pfx_password: ${{ env.roblox_pfx_password }}
+has_extension_file: true
+generate_dhparam: true
+overwrite_config: true
+config:
+  country: US
+  state: CA
+  locality: San Mateo
+  organization: ROBLOX
+  organizational_unit: Root CA (AD1)
+  common_name: roblox-COU1-AD1-CA
+  critical_basic_constraints: true

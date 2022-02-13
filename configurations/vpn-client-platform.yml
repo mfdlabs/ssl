@@ -1,0 +1,38 @@
+# Configuration for the MFDLABS VPN Client Platform
+root_ca:
+  - $ref: ./root_certificates/service-ops.yml
+leaf_certificate:
+  - name: vpn-client-platform
+    ca_name: service-ops
+    ca_password: ${{ env.service_ops_password }}
+    is_ca_root_ca: true
+    password: ${{ env.vpn_client_platform_password }}
+    pfx_password: ${{ env.vpn_client_platform_pfx_password }}
+    generate_dhparam: true
+    overwrite_config: true
+    config:
+      organization: MFDLABS
+      organizational_unit: VPN Client Platform Operations
+      common_name: "*.vpn-clients.mfdlabs.local"
+      critical_basic_constraints: true
+      critical_key_usage: true
+      subject_alternative_name:
+        dns_names:
+          - "vpn-clients.mfdlabs.local"
+          - "*.vpn-clients.mfdlabs.local"
+          - "old-vpn-clients.mfdlabs.local"
+          - "*.old-vpn-clients.mfdlabs.local"
+          - "okta-vpn-clients.mfdlabs.local"
+          - "*.okta-vpn-clients.mfdlabs.local"
+          - "okta-vpn-test.mfdlabs.local"
+          - "*.okta-vpn-test.mfdlabs.local"
+          - "okta-vpn-test-2time.mfdlabs.local"
+          - "*.okta-vpn-test-2time.mfdlabs.local"
+          - "ad-vpn-clients.mfdlabs.local"
+          - "*.ad-vpn-clients.mfdlabs.local"
+          - "active-directory-vpn-clients.mfdlabs.local"
+          - "*.active-directory-vpn-clients.mfdlabs.local"
+          - "aws-vpn-clients.mfdlabs.local"
+          - "*.aws-vpn-clients.mfdlabs.local"
+          - "border-connectivity-vpn-clients.mfdlabs.local"
+          - "*.border-connectivity-vpn-clients.mfdlabs.local"

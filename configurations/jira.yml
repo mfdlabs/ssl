@@ -1,0 +1,21 @@
+# Configuration for an Atlassian Jira instance
+root_ca:
+  - $ref: ./root_certificates/atlassian.yml
+leaf_certificate:
+  - name: jira
+    ca_name: atlassian
+    ca_password: ${{ env.atlassian_password }}
+    is_ca_root_ca: true
+    password: ${{ env.jira_password }}
+    pfx_password: ${{ env.jira_pfx_password }}
+    generate_dhparam: true
+    overwrite_config: true
+    config:
+      country: US
+      organization: MFDLABS Corporation
+      organizational_unit: MFDLABS Jira Workstation.
+      common_name: jira.mfdlabs.local
+      critical_basic_constraints: true
+      subject_alternative_name:
+        dns_names:
+          - "jira.mfdlabs.local"

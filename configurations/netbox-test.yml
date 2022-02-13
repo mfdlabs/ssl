@@ -1,0 +1,26 @@
+# Configuration for a test netbox environment
+root_ca:
+  - $ref: ./root_certificates/integration-testing.yml
+leaf_certificate:
+  - name: netbox-test
+    ca_name: integration-testing
+    ca_password: ${{ env.integration_testing_password }}
+    is_ca_root_ca: true
+    password: ${{ env.netbox_password }}
+    pfx_password:  ${{ env.netbox_pfx_password }}
+    generate_dhparam: true
+    overwrite_config: true
+    config:
+      common_name: "*.netbox.mfdlabs.local"
+      critical_basic_constraints: true
+      subject_alternative_name:
+        dns_names:
+          - "netbox.mfdlabs.local"
+          - "*.netbox.mfdlabs.local"
+          - "netbox-integration-testing.mfdlabs.local"
+          - "*.netbox-integration-testing.mfdlabs.local"
+        ip_addresses:
+          - 127.0.0.1
+          - ::1
+          - 192.168.22.53
+          - 10.241.111.36

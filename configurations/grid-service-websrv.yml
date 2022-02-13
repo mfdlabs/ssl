@@ -1,0 +1,26 @@
+# Configuration for the Roblox Grid Service Web Server certificate.
+root_ca:
+  - $ref: ./root_certificates/client-products-v1.yml
+leaf_certificate:
+  - name: grid-service-websrv
+    ca_name: client-products-v1
+    ca_password: ${{ env.client_products_v1_password }}
+    is_ca_root_ca: true
+    password: ${{ env.grid_service_websrv_password }}
+    pfx_password: ${{ env.grid_service_websrv_pfx_password }}
+    generate_dhparam: true
+    overwrite_config: true
+    config:
+      organization: MFDLABS
+      organizational_unit: Grid Team
+      common_name: MFDLABS Grid Service Web Server
+      critical_basic_constraints: true
+      subject_alternative_name:
+        dns_names:
+          - "*.sitetest4.robloxlabs.com"
+          - "*.api.sitetest4.robloxlabs.com"
+          - "*.simulpong.com"
+          - localhost
+        ip_addresses:
+          - 127.0.0.1
+          - "::1"

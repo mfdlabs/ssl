@@ -1,0 +1,14 @@
+# MFDLABS Test Sector V2 (We are cool)
+name: test-sector-v2
+password: ${{ env.test_sector_v2_password }}
+pfx_password: ${{ env.test_sector_v2_pfx_password }}
+has_extension_file: true
+generate_dhparam: true
+overwrite_config: true
+config:
+  country: IE
+  organization: MFDLABS
+  organizational_unit: Test Sector
+  common_name: MFDLABS Test Sector V2 (We are cool)
+  email: test-sector-guys-ca-signing@mfdlabs.local
+  critical_basic_constraints: true

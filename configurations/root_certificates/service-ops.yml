@@ -1,0 +1,16 @@
+# Service Operations Certificate Authority
+name: service-ops
+password: ${{ env.service_ops_password }}
+pfx_password: ${{ env.service_ops_pfx_password }}
+has_extension_file: true
+generate_dhparam: true
+overwrite_config: true
+config:
+  country: US
+  state: California
+  locality: Los Angeles
+  organization: MFDLABS
+  organizational_unit: Service Operations
+  common_name: Service Operations Certificate Authority
+  email: ca@ops.mfdlabs.local
+  critical_basic_constraints: true

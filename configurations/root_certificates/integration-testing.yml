@@ -1,0 +1,16 @@
+# Certification Authority @ ad715-test.wckie02.mfdlabs.local
+name: integration-testing
+password: ${{ env.integration_testing_password }}
+pfx_password: ${{ env.integration_testing_pfx_password }}
+has_extension_file: true
+generate_dhparam: true
+overwrite_config: true
+config:
+  country: US
+  state: California
+  locality: Los Angeles
+  organization: MFDLABS
+  organizational_unit: MFDLABS Integration Testers
+  common_name: Certification Authority @ ad715-test.wckie02.mfdlabs.local
+  email: ca@ad715-test.wckie02.mfdlabs.local
+  critical_basic_constraints: true
