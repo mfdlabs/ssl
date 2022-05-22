@@ -30,6 +30,19 @@ EXPIRATION_IN_DAYS=$9
 KEY_LENGTH=${10}
 EXTENSION_FILE_EXTENSION=${11}
 
+# If the password starts with an @, then it is a file containing the password
+if [ "${CERT_PASSWORD:0:1}" == "@" ]; then
+	CERT_PASSWORD=$(cat ${CERT_PASSWORD:1})
+fi
+
+if [ "${PFX_PASSWORD:0:1}" == "@" ]; then
+	PFX_PASSWORD=$(cat ${PFX_PASSWORD:1})
+fi
+
+if [ "${CHAIN_PASSWORD:0:1}" == "@" ]; then
+	CHAIN_PASSWORD=$(cat ${CHAIN_PASSWORD:1})
+fi
+
 if [ -z "$CERT_NAME" ] || [ ${#CERT_NAME} -lt 1 ] ; 
 then
 	echo "Missing parameter CERT_NAME or it was less than 1 characters in length, for intermediate certificate name, this is required."

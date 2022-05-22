@@ -31,6 +31,14 @@ EXPIRATION_IN_DAYS=$7
 KEY_LENGTH=$8
 EXTENSION_FILE_EXTENSION=$9
 
+# If the password starts with an @, then it is a file containing the password
+if [ "${ROOT_CA_PASSWORD:0:1}" == "@" ]; then
+	CERT_PASSWORD=$(cat ${CERT_PASSWORD:1})
+fi
+
+if [ "${PFX_PASSWORD:0:1}" == "@" ]; then
+	PFX_PASSWORD=$(cat ${PFX_PASSWORD:1})
+fi
 
 if [ -z "$ROOT_CA_NAME" ] || [ ${#ROOT_CA_NAME} -lt 1 ] ; 
 then
