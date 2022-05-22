@@ -32,7 +32,7 @@ EXTENSION_FILE_EXTENSION=${12}
 
 # If the password starts with an @, then it is a file containing the password
 if [ "${CA_PASSWORD:0:1}" == "@" ]; then
-	CERT_PASSWORD=$(cat ${CERT_PASSWORD:1})
+	CA_PASSWORD=$(cat ${CA_PASSWORD:1})
 fi
 
 if [ "${PFX_PASSWORD:0:1}" == "@" ]; then
