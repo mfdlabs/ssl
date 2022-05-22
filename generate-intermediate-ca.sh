@@ -205,5 +205,5 @@ fi
 if [ "$DO_NOT_GENERATE_DHPARAM" = "NO" ] ;
 then
 	# generate dhparam
-	openssl dhparam -in $CA_CERT_FILE_NAME -out $CA_CERT_FQN-dhparam.pem 2048
+	openssl dhparam -in $CA_CERT_FILE_NAME -out $CA_CERT_FQN-dhparam.pem $KEY_LENGTH
 fi

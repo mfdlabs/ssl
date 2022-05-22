@@ -175,5 +175,5 @@ fi
 if [ "$DO_NOT_GENERATE_DHPARAM" = "NO" ] ;
 then
 	# Generate DH parameters
-	openssl dhparam -in $CA_CERT_NAME -out $CA_CERT_DH_PARAM_FILE_NAME 2048
+	openssl dhparam -in $CA_CERT_NAME -out $CA_CERT_DH_PARAM_FILE_NAME $KEY_LENGTH
 fi
