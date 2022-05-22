@@ -153,8 +153,8 @@ CA_CERT_PEM_FILE_NAME=$CA_CERT_FQN.pem
 CA_CERT_PASSWORD_FILE_NAME=$CA_CERT_FQN.password.txt
 CA_CERT_STORE_OUTPUT_FILE_NAME=$CA_CERTS_STORE$CA_CERT_FILE_NAME
 
-printf "# Command: %s/generate-intermediate-ca.sh %s %s %s %s %s %s %s %s %s\n# Root Directory: %s\n# CA Name: %s\n# Intermediate CA Name: %s\nRootCA: %s\nIntermediate CA: %s\nIntermediate CA PFX: %s\n" $PWD $IS_CHAIN_ROOT_CA $CHAIN_NAME $CHAIN_PASSWORD $CA_NAME $CA_PASSWORD $PFX_PASSWORD $INSERT_CA_INTO_TRUSTED_CERTS $DO_NOT_GENERATE_DHPARAM $KEEP_CERTIFICATE_REQUEST_FILE $PWD $CA_CHAIN_FQN $CA_CERT_FQN $CHAIN_PASSWORD $CA_PASSWORD $PFX_PASSWORD
-printf "# Command: %s/generate-intermediate-ca.sh %s %s %s %s %s %s %s %s %s\n# Root Directory: %s\n# CA Name: %s\n# Intermediate CA Name: %s\nRootCA: %s\nIntermediate CA: %s\nIntermediate CA PFX: %s\n" $PWD $IS_CHAIN_ROOT_CA $CHAIN_NAME $CHAIN_PASSWORD $CA_NAME $CA_PASSWORD $PFX_PASSWORD $INSERT_CA_INTO_TRUSTED_CERTS $DO_NOT_GENERATE_DHPARAM $KEEP_CERTIFICATE_REQUEST_FILE $PWD $CA_CHAIN_FQN $CA_CERT_FQN $CHAIN_PASSWORD $CA_PASSWORD $PFX_PASSWORD > $CA_CERT_FQN.credentials.txt
+printf "# Root Directory: %s\n# CA Name: %s\n# Intermediate CA Name: %s\nRootCA: %s\nIntermediate CA: %s\nIntermediate CA PFX: %s\n" $PWD $CA_CHAIN_FQN $CA_CERT_FQN $CHAIN_PASSWORD $CA_PASSWORD $PFX_PASSWORD
+printf "# Root Directory: %s\n# CA Name: %s\n# Intermediate CA Name: %s\nRootCA: %s\nIntermediate CA: %s\nIntermediate CA PFX: %s\n" $PWD $CA_CHAIN_FQN $CA_CERT_FQN $CHAIN_PASSWORD $CA_PASSWORD $PFX_PASSWORD > $CA_CERT_FQN.credentials.txt
 
 # Certificate's password
 printf "%s" $CA_PASSWORD > $CA_CERT_PASSWORD_FILE_NAME

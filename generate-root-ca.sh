@@ -113,8 +113,8 @@ CA_NAME=$ROOT_CA_PREFIX$ROOT_CA_NAME
 CREDENTIALS_FILE_NAME=$CA_NAME.credentials.txt
 CA_PASSWORD_FILE_NAME=$CA_NAME.password.txt
 
-printf "# Command: %s/generate-root-ca.sh %s %s %s %s %s %s\n# Root Directory: %s\n# RootCA Name: %s\nRootCA: %s\nRootCA PFX: %s\n" $PWD $ROOT_CA_NAME $ROOT_CA_PASSWORD $PFX_PASSWORD $INSERT_ROOT_CA_INTO_TRUSTED_CERTS $HAS_EXTENSION_FILE $DO_NOT_GENERATE_DHPARAM $PWD $CA_NAME $ROOT_CA_PASSWORD $PFX_PASSWORD
-printf "# Command: %s/generate-root-ca.sh %s %s %s %s %s %s\n# Root Directory: %s\n# RootCA Name: %s\nRootCA: %s\nRootCA PFX: %s\n" $PWD $ROOT_CA_NAME $ROOT_CA_PASSWORD $PFX_PASSWORD $INSERT_ROOT_CA_INTO_TRUSTED_CERTS $HAS_EXTENSION_FILE $DO_NOT_GENERATE_DHPARAM $PWD $CA_NAME $ROOT_CA_PASSWORD $PFX_PASSWORD > $CREDENTIALS_FILE_NAME
+printf "# Root Directory: %s\n# RootCA Name: %s\nRootCA: %s\nRootCA PFX: %s\n" $PWD $CA_NAME $ROOT_CA_PASSWORD $PFX_PASSWORD
+printf "# Root Directory: %s\n# RootCA Name: %s\nRootCA: %s\nRootCA PFX: %s\n" $PWD $CA_NAME $ROOT_CA_PASSWORD $PFX_PASSWORD > $CREDENTIALS_FILE_NAME
 
 CA_KEY_FILE_NAME=$CA_NAME.key
 UNENCRYPTED_CA_KEY_FILE_NAME=$CA_NAME.unecrypted.key

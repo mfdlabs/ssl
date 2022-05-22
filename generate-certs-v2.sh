@@ -3,7 +3,7 @@
 # Constants
 NO_ROOT_ON_INSERT_TO_CA_STORE="This requires you to run as root if you want to insert the root certificate into the current machine's root certificate authority. If you don't want to insert it into the root certificate authority, please set the sixth parameter of this command to \"NO\"."
 CERT_BIN=$PWD/bin
-ROOT_CA_PREFIX=$CERT_BIN/ca-
+ROOT_CA_PREFIX=$CERT_BIN/root-ca-
 CA_PREFIX=$CERT_BIN/ca-
 ALL_AUTHORITHY_PREFIX=$CERT_BIN/
 CA_CERTS_STORE=/usr/local/share/ca-certificates/
@@ -131,8 +131,8 @@ fi
 
 ROOT_CHAIN_NAME=$ROOT_CA_PREFIX$CHAIN_NAME
 
-printf "# Command: %s/generate-certs-v2.sh %s %s %s %s %s %s %s %s\n# Root Directory: %s\n# CA Name: %s\n# Intermediate Cert Name: %s\nCA: %s\nIntermediate Cert: %s\nIntermediate Cert PFX: %s\n" $PWD $IS_CHAIN_ROOT_CA $CHAIN_NAME $CHAIN_PASSWORD $CERT_NAME $CERT_PASSWORD $PFX_PASSWORD $DO_NOT_GENERATE_DHPARAM $KEEP_CERTIFICATE_REQUEST_FILE $PWD $ROOT_CHAIN_NAME $ALL_AUTHORITHY_NAME $CHAIN_PASSWORD $CERT_PASSWORD $PFX_PASSWORD
-printf "# Command: %s/generate-certs-v2.sh %s %s %s %s %s %s %s %s\n# Root Directory: %s\n# CA Name: %s\n# Intermediate Cert Name: %s\nCA: %s\nIntermediate Cert: %s\nIntermediate Cert PFX: %s\n" $PWD $IS_CHAIN_ROOT_CA $CHAIN_NAME $CHAIN_PASSWORD $CERT_NAME $CERT_PASSWORD $PFX_PASSWORD $DO_NOT_GENERATE_DHPARAM $KEEP_CERTIFICATE_REQUEST_FILE $PWD $ROOT_CHAIN_NAME $ALL_AUTHORITHY_NAME $CHAIN_PASSWORD $CERT_PASSWORD $PFX_PASSWORD > $CREDENTIALS_FILE_NAME
+printf "# Root Directory: %s\n# CA Name: %s\n# Intermediate Cert Name: %s\nCA: %s\nIntermediate Cert: %s\nIntermediate Cert PFX: %s\n" $PWD $ROOT_CHAIN_NAME $ALL_AUTHORITHY_NAME $CHAIN_PASSWORD $CERT_PASSWORD $PFX_PASSWORD
+printf "# Root Directory: %s\n# CA Name: %s\n# Intermediate Cert Name: %s\nCA: %s\nIntermediate Cert: %s\nIntermediate Cert PFX: %s\n" $PWD $ROOT_CHAIN_NAME $ALL_AUTHORITHY_NAME $CHAIN_PASSWORD $CERT_PASSWORD $PFX_PASSWORD > $CREDENTIALS_FILE_NAME
 
 # Top header constants
 KEY_FILE_NAME=$ALL_AUTHORITHY_NAME.key
