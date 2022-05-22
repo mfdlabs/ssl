@@ -6,7 +6,7 @@
 # Constants
 NO_ROOT_ON_INSERT_TO_CA_STORE="This requires you to run as root if you want to insert the root certificate into the current machine's root certificate authority. If you don't want to insert it into the root certificate authority, please set the fourth parameter of this command to \"NO\"."
 CERT_BIN=$PWD/bin
-ROOT_CA_PREFIX=$CERT_BIN/mfdlabs-root-ca-
+ROOT_CA_PREFIX=$CERT_BIN/root-ca-
 CA_CERTS_STORE=/usr/local/share/ca-certificates/
 
 # Create cert bin directory if it doesn't exist
@@ -17,7 +17,7 @@ fi
 # Variables
 
 if [ $# -eq 0 ]; then
-    echo "Usage: $PWD/generate-certs-v2.sh ROOT_CA_NAME ROOT_CA_PASSWORD PFX_PASSWORD INSERT_ROOT_CA_INTO_TRUSTED_CERTS DO_NOT_GENERATE_DHPARAM HAS_EXTENSION_FILE"
+    echo "Usage: $0 ROOT_CA_NAME ROOT_CA_PASSWORD PFX_PASSWORD [INSERT_ROOT_CA_INTO_TRUSTED_CERTS=NO] [DO_NOT_GENERATE_DHPARAM=NO] [HAS_EXTENSION_FILE=NO] [EXPIRATION_IN_DAYS=4096] [KEY_LENGTH=2048] [EXTENSION_FILE_EXTENSION=.conf]"
     exit 1
 fi
 
@@ -27,6 +27,71 @@ PFX_PASSWORD=$3
 INSERT_ROOT_CA_INTO_TRUSTED_CERTS=$4
 DO_NOT_GENERATE_DHPARAM=$5
 HAS_EXTENSION_FILE=$6
+EXPIRATION_IN_DAYS=$7
+KEY_LENGTH=$8
+EXTENSION_FILE_EXTENSION=$9
+
+
+if [ -z "$ROOT_CA_NAME" ] || [ ${#ROOT_CA_NAME} -lt 1 ] ; 
+then
+	echo "Missing parameter ROOT_CA_NAME or it was less than 1 characters in length, for root certificate name, this is required."
+	exit 1
+fi
+
+if [ -z "$ROOT_CA_PASSWORD" ] || [ ${#ROOT_CA_PASSWORD} -lt 4 ] ;
+then
+	echo "Missing parameter ROOT_CA_PASSWORD or it was less than 4 characters in length, for root certificate password, this is required."
+	exit 1
+fi
+
+if [ -z "$PFX_PASSWORD" ] || [ ${#PFX_PASSWORD} -lt 4 ] ;
+then
+	echo "Missing parameter PFX_PASSWORD or it was less than 4 characters in length, for intermediate certificate pfx password, this is required."
+	exit 1
+fi
+
+if [ -z "$DO_NOT_GENERATE_DHPARAM" ] ;
+then
+	DO_NOT_GENERATE_DHPARAM=NO
+fi
+
+if [ -z "$EXTENSION_FILE_EXTENSION"	]; then
+	EXTENSION_FILE_EXTENSION=".conf"
+fi
+
+if [ -z "$KEY_LENGTH" ]; then
+	KEY_LENGTH=2048
+fi
+
+if [ -z "$(echo $KEY_LENGTH | sed -n '/^[0-9]\+$/p')" ] ;
+then
+	echo "KEY_LENGTH must be a number."
+	exit 1
+fi
+
+# If the key length is not 1024, 2048, or 4096, then exit
+if [ $KEY_LENGTH -ne 1024 ] && [ $KEY_LENGTH -ne 2048 ] && [ $KEY_LENGTH -ne 4096 ]; then
+	echo "KEY_LENGTH must be 1024, 2048, or 4096."
+	exit 1
+fi
+
+if [ -z "$EXPIRATION_IN_DAYS" ] ;
+then
+	EXPIRATION_IN_DAYS=4086
+fi
+
+# If expiration in days is not a number, exit
+if [ -z "$(echo $EXPIRATION_IN_DAYS | sed -n '/^[0-9]\+$/p')" ] ;
+then
+	echo "EXPIRATION_IN_DAYS must be a number."
+	exit 1
+fi
+
+if [ $EXPIRATION_IN_DAYS -lt 0 ] ;
+then
+	echo "EXPIRATION_IN_DAYS must be greater than or equal to 0."
+	exit 1
+fi
 
 if [ -z "$INSERT_ROOT_CA_INTO_TRUSTED_CERTS" ] ;
 then
@@ -42,30 +107,6 @@ if [ "$EUID" -ne 0 ] && [ "$INSERT_ROOT_CA_INTO_TRUSTED_CERTS" = "YES" ] ;
 then 
   echo $NO_ROOT_ON_INSERT_TO_CA_STORE
   exit 1
-fi
-
-
-if [ -z "$ROOT_CA_NAME" ] || [ ${#ROOT_CA_NAME} -le 1 ] ; 
-then
-	echo "Missing parameter ROOT_CA_NAME or it was less than 1 or equal to characters in length, for root certificate name, this is required."
-	exit 1
-fi
-
-if [ -z "$ROOT_CA_PASSWORD" ] || [ ${#ROOT_CA_PASSWORD} -le 4 ] ;
-then
-	echo "Missing parameter ROOT_CA_PASSWORD or it was less than 4 equal to characters in length, for root certificate password, this is required."
-	exit 1
-fi
-
-if [ -z "$PFX_PASSWORD" ] || [ ${#PFX_PASSWORD} -le 4 ] ;
-then
-	echo "Missing parameter PFX_PASSWORD or it was less than 4 equal to characters in length, for intermediate certificate pfx password, this is required."
-	exit 1
-fi
-
-if [ -z "$DO_NOT_GENERATE_DHPARAM" ] ;
-then
-	DO_NOT_GENERATE_DHPARAM=NO
 fi
 
 CA_NAME=$ROOT_CA_PREFIX$ROOT_CA_NAME
@@ -87,7 +128,7 @@ CA_CERT_DH_PARAM_FILE_NAME=$CA_NAME.dhparam.pem
 printf "%s" $ROOT_CA_PASSWORD > $CA_PASSWORD_FILE_NAME
 
 # Generate private key
-openssl genrsa -des3 -passout pass:$ROOT_CA_PASSWORD -out $CA_KEY_FILE_NAME 2048
+openssl genrsa -des3 -passout pass:$ROOT_CA_PASSWORD -out $CA_KEY_FILE_NAME $KEY_LENGTH
 
 # Generate unecrypted private key
 openssl rsa -in $CA_KEY_FILE_NAME -out $UNENCRYPTED_CA_KEY_FILE_NAME -passin pass:$ROOT_CA_PASSWORD
@@ -95,20 +136,20 @@ openssl rsa -in $CA_KEY_FILE_NAME -out $UNENCRYPTED_CA_KEY_FILE_NAME -passin pas
 # Check if we are generating a root ca with an extension file
 if [ "$HAS_EXTENSION_FILE" = "YES" ] ;
 then
-	EXTENSION_FILE_NAME=$CA_NAME.conf
+	EXTENSION_FILE_NAME=$CA_NAME$EXTENSION_FILE_EXTENSION
 
 	# Check if the extension file exists
 	if [ -f $EXTENSION_FILE_NAME ] ;
 	then
 		# Generate the root ca certificate reading the specified extension file
-		openssl req -x509 -new -nodes -key $CA_KEY_FILE_NAME -sha256 -days 4086 -extensions config_extensions -config $EXTENSION_FILE_NAME -out $CA_CERT_NAME -passin pass:$ROOT_CA_PASSWORD
+		openssl req -x509 -new -nodes -key $CA_KEY_FILE_NAME -sha256 -days $EXPIRATION_IN_DAYS -extensions config_extensions -config $EXTENSION_FILE_NAME -out $CA_CERT_NAME -passin pass:$ROOT_CA_PASSWORD
 	else
 		echo "Extension file $EXTENSION_FILE_NAME does not exist."
 		exit 1
 	fi
 else
 	# Generate root ca certificate
-	openssl req -x509 -new -nodes -key $CA_KEY_FILE_NAME -sha256 -days 4086 -passin pass:$ROOT_CA_PASSWORD -out $CA_CERT_NAME
+	openssl req -x509 -new -nodes -key $CA_KEY_FILE_NAME -sha256 -days $EXPIRATION_IN_DAYS -passin pass:$ROOT_CA_PASSWORD -out $CA_CERT_NAME
 fi
 
 # Generate pfx
