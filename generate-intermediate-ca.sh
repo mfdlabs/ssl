@@ -166,29 +166,29 @@ CA_CERT_PEM_FILE_NAME=$CA_CERT_FQN.pem
 CA_CERT_PASSWORD_FILE_NAME=$CA_CERT_FQN.password.txt
 CA_CERT_STORE_OUTPUT_FILE_NAME=$CA_CERTS_STORE$CA_CERT_FILE_NAME
 
-printf "# Root Directory: %s\n# CA Name: %s\n# Intermediate CA Name: %s\nRootCA: %s\nIntermediate CA: %s\nIntermediate CA PFX: %s\n" $PWD $CA_CHAIN_FQN $CA_CERT_FQN $CHAIN_PASSWORD $CA_PASSWORD $PFX_PASSWORD
-printf "# Root Directory: %s\n# CA Name: %s\n# Intermediate CA Name: %s\nRootCA: %s\nIntermediate CA: %s\nIntermediate CA PFX: %s\n" $PWD $CA_CHAIN_FQN $CA_CERT_FQN $CHAIN_PASSWORD $CA_PASSWORD $PFX_PASSWORD > $CA_CERT_FQN.credentials.txt
+printf "# Root Directory: %s\n# CA Name: %s\n# Intermediate CA Name: %s\nRootCA: %s\nIntermediate CA: %s\nIntermediate CA PFX: %s\n" $PWD $CA_CHAIN_FQN $CA_CERT_FQN "$CHAIN_PASSWORD" "$CA_PASSWORD" "$PFX_PASSWORD"
+printf "# Root Directory: %s\n# CA Name: %s\n# Intermediate CA Name: %s\nRootCA: %s\nIntermediate CA: %s\nIntermediate CA PFX: %s\n" $PWD $CA_CHAIN_FQN $CA_CERT_FQN "$CHAIN_PASSWORD" "$CA_PASSWORD" "$PFX_PASSWORD" > $CA_CERT_FQN.credentials.txt
 
 # Certificate's password
-printf "%s" $CA_PASSWORD > $CA_CERT_PASSWORD_FILE_NAME
+printf "%s" "$CA_PASSWORD" > $CA_CERT_PASSWORD_FILE_NAME
 
 # private key
-openssl genrsa -des3 -passout pass:$CA_PASSWORD -out $CA_KEY_FILE_NAME $KEY_LENGTH
+openssl genrsa -des3 -passout pass:"$CA_PASSWORD" -out $CA_KEY_FILE_NAME $KEY_LENGTH
 
 # get unencrypted private key
-openssl rsa -in $CA_KEY_FILE_NAME -out $UNENCRYPTED_CA_KEY_FILE_NAME -passin pass:$CA_PASSWORD
+openssl rsa -in $CA_KEY_FILE_NAME -out $UNENCRYPTED_CA_KEY_FILE_NAME -passin pass:"$CA_PASSWORD"
 
 # generate certificate signing request
-openssl req -new -key $CA_KEY_FILE_NAME -passin pass:$CA_PASSWORD -out $CA_CERTIFICATE_REQUEST_FILE_NAME -config $CA_CONFIG_FILE
+openssl req -new -key $CA_KEY_FILE_NAME -passin pass:"$CA_PASSWORD" -out $CA_CERTIFICATE_REQUEST_FILE_NAME -config $CA_CONFIG_FILE
 
 # generate certificate
-openssl x509 -req -days $EXPIRATION_IN_DAYS -in $CA_CERTIFICATE_REQUEST_FILE_NAME -CA $CA_CHAIN_FILE_NAME -CAkey $CA_CHAIN_KEY_FILE_NAME -CAcreateserial -passin pass:$CHAIN_PASSWORD -out $CA_CERT_FILE_NAME -sha256 -extfile $CA_CONFIG_FILE -extensions config_extensions
+openssl x509 -req -days $EXPIRATION_IN_DAYS -in $CA_CERTIFICATE_REQUEST_FILE_NAME -CA $CA_CHAIN_FILE_NAME -CAkey $CA_CHAIN_KEY_FILE_NAME -CAcreateserial -passin pass:"$CHAIN_PASSWORD" -out $CA_CERT_FILE_NAME -sha256 -extfile $CA_CONFIG_FILE -extensions config_extensions
 
 # generate pfx
-openssl pkcs12 -export -passin pass:$CA_PASSWORD -password pass:$PFX_PASSWORD -out $CA_CERT_PFX_FILE_NAME -inkey $CA_KEY_FILE_NAME -in $CA_CERT_FILE_NAME -CAfile $CA_CHAIN_FILE_NAME
+openssl pkcs12 -export -passin pass:"$CA_PASSWORD" -password pass:"$PFX_PASSWORD" -out $CA_CERT_PFX_FILE_NAME -inkey $CA_KEY_FILE_NAME -in $CA_CERT_FILE_NAME -CAfile $CA_CHAIN_FILE_NAME
 
 # extract pem from pfx
-openssl pkcs12 -password pass:$PFX_PASSWORD -in $CA_CERT_PFX_FILE_NAME -out $CA_CERT_PEM_FILE_NAME -nodes
+openssl pkcs12 -password pass:"$PFX_PASSWORD" -in $CA_CERT_PFX_FILE_NAME -out $CA_CERT_PEM_FILE_NAME -nodes
 
 if [ "$INSERT_CA_INTO_TRUSTED_CERTS" = "YES" ] ;
 then

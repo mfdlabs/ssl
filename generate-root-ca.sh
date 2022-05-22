@@ -121,8 +121,8 @@ CA_NAME=$ROOT_CA_PREFIX$ROOT_CA_NAME
 CREDENTIALS_FILE_NAME=$CA_NAME.credentials.txt
 CA_PASSWORD_FILE_NAME=$CA_NAME.password.txt
 
-printf "# Root Directory: %s\n# RootCA Name: %s\nRootCA: %s\nRootCA PFX: %s\n" $PWD $CA_NAME $ROOT_CA_PASSWORD $PFX_PASSWORD
-printf "# Root Directory: %s\n# RootCA Name: %s\nRootCA: %s\nRootCA PFX: %s\n" $PWD $CA_NAME $ROOT_CA_PASSWORD $PFX_PASSWORD > $CREDENTIALS_FILE_NAME
+printf "# Root Directory: %s\n# RootCA Name: %s\nRootCA: %s\nRootCA PFX: %s\n" $PWD $CA_NAME "$ROOT_CA_PASSWORD" "$PFX_PASSWORD"
+printf "# Root Directory: %s\n# RootCA Name: %s\nRootCA: %s\nRootCA PFX: %s\n" $PWD $CA_NAME "$ROOT_CA_PASSWORD" "$PFX_PASSWORD" > $CREDENTIALS_FILE_NAME
 
 CA_KEY_FILE_NAME=$CA_NAME.key
 UNENCRYPTED_CA_KEY_FILE_NAME=$CA_NAME.unecrypted.key
@@ -133,13 +133,13 @@ CA_CERT_STORE_OUTPUT_FILE_NAME=$CA_CERTS_STORE$CA_CERT_NAME
 CA_CERT_DH_PARAM_FILE_NAME=$CA_NAME.dhparam.pem
 
 # Root CA's password
-printf "%s" $ROOT_CA_PASSWORD > $CA_PASSWORD_FILE_NAME
+printf "%s" "$ROOT_CA_PASSWORD" > $CA_PASSWORD_FILE_NAME
 
 # Generate private key
-openssl genrsa -des3 -passout pass:$ROOT_CA_PASSWORD -out $CA_KEY_FILE_NAME $KEY_LENGTH
+openssl genrsa -des3 -passout pass:"$ROOT_CA_PASSWORD" -out $CA_KEY_FILE_NAME $KEY_LENGTH
 
 # Generate unecrypted private key
-openssl rsa -in $CA_KEY_FILE_NAME -out $UNENCRYPTED_CA_KEY_FILE_NAME -passin pass:$ROOT_CA_PASSWORD
+openssl rsa -in $CA_KEY_FILE_NAME -out $UNENCRYPTED_CA_KEY_FILE_NAME -passin pass:"$ROOT_CA_PASSWORD"
 
 # Check if we are generating a root ca with an extension file
 if [ "$HAS_EXTENSION_FILE" = "YES" ] ;
@@ -150,21 +150,21 @@ then
 	if [ -f $EXTENSION_FILE_NAME ] ;
 	then
 		# Generate the root ca certificate reading the specified extension file
-		openssl req -x509 -new -nodes -key $CA_KEY_FILE_NAME -sha256 -days $EXPIRATION_IN_DAYS -extensions config_extensions -config $EXTENSION_FILE_NAME -out $CA_CERT_NAME -passin pass:$ROOT_CA_PASSWORD
+		openssl req -x509 -new -nodes -key $CA_KEY_FILE_NAME -sha256 -days $EXPIRATION_IN_DAYS -extensions config_extensions -config $EXTENSION_FILE_NAME -out $CA_CERT_NAME -passin pass:"$ROOT_CA_PASSWORD"
 	else
 		echo "Extension file $EXTENSION_FILE_NAME does not exist."
 		exit 1
 	fi
 else
 	# Generate root ca certificate
-	openssl req -x509 -new -nodes -key $CA_KEY_FILE_NAME -sha256 -days $EXPIRATION_IN_DAYS -passin pass:$ROOT_CA_PASSWORD -out $CA_CERT_NAME
+	openssl req -x509 -new -nodes -key $CA_KEY_FILE_NAME -sha256 -days $EXPIRATION_IN_DAYS -passin pass:"$ROOT_CA_PASSWORD" -out $CA_CERT_NAME
 fi
 
 # Generate pfx
-openssl pkcs12 -export -passin pass:$ROOT_CA_PASSWORD -password pass:$PFX_PASSWORD -out $CA_PFX_CERT_NAME -inkey $CA_KEY_FILE_NAME -in $CA_CERT_NAME
+openssl pkcs12 -export -passin pass:"$ROOT_CA_PASSWORD" -password pass:"$PFX_PASSWORD" -out $CA_PFX_CERT_NAME -inkey $CA_KEY_FILE_NAME -in $CA_CERT_NAME
 
 # Extract pem from pfx
-openssl pkcs12 -password pass:$PFX_PASSWORD -in $CA_PFX_CERT_NAME -out $CA_PEM_CERT_NAME -nodes
+openssl pkcs12 -password pass:"$PFX_PASSWORD" -in $CA_PFX_CERT_NAME -out $CA_PEM_CERT_NAME -nodes
 
 if [ "$INSERT_ROOT_CA_INTO_TRUSTED_CERTS" = "YES" ] ;
 then

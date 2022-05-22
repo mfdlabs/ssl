@@ -144,8 +144,8 @@ fi
 
 ROOT_CHAIN_NAME=$ROOT_CA_PREFIX$CHAIN_NAME
 
-printf "# Root Directory: %s\n# CA Name: %s\n# Intermediate Cert Name: %s\nCA: %s\nIntermediate Cert: %s\nIntermediate Cert PFX: %s\n" $PWD $ROOT_CHAIN_NAME $ALL_AUTHORITHY_NAME $CHAIN_PASSWORD $CERT_PASSWORD $PFX_PASSWORD
-printf "# Root Directory: %s\n# CA Name: %s\n# Intermediate Cert Name: %s\nCA: %s\nIntermediate Cert: %s\nIntermediate Cert PFX: %s\n" $PWD $ROOT_CHAIN_NAME $ALL_AUTHORITHY_NAME $CHAIN_PASSWORD $CERT_PASSWORD $PFX_PASSWORD > $CREDENTIALS_FILE_NAME
+printf "# Root Directory: %s\n# CA Name: %s\n# Intermediate Cert Name: %s\nCA: %s\nIntermediate Cert: %s\nIntermediate Cert PFX: %s\n" $PWD $ROOT_CHAIN_NAME $ALL_AUTHORITHY_NAME "$CHAIN_PASSWORD" "$CERT_PASSWORD" "$PFX_PASSWORD"
+printf "# Root Directory: %s\n# CA Name: %s\n# Intermediate Cert Name: %s\nCA: %s\nIntermediate Cert: %s\nIntermediate Cert PFX: %s\n" $PWD $ROOT_CHAIN_NAME $ALL_AUTHORITHY_NAME "$CHAIN_PASSWORD" "$CERT_PASSWORD" "$PFX_PASSWORD" > $CREDENTIALS_FILE_NAME
 
 # Top header constants
 KEY_FILE_NAME=$ALL_AUTHORITHY_NAME.key
@@ -160,25 +160,25 @@ INTERMEDIATECERT_DH_PARAM_FILE_NAME=$ALL_AUTHORITHY_NAME.dhparam.pem
 PASSWORD_FILE_NAME=$ALL_AUTHORITHY_NAME.password.txt
 
 # Certificate's password
-printf "%s" $CERT_PASSWORD > $PASSWORD_FILE_NAME
+printf "%s" "$CERT_PASSWORD" > $PASSWORD_FILE_NAME
 
 # private key
-openssl genrsa -des3 -passout pass:$CERT_PASSWORD -out $KEY_FILE_NAME $KEY_LENGTH
+openssl genrsa -des3 -passout pass:"$CERT_PASSWORD" -out $KEY_FILE_NAME $KEY_LENGTH
 
 # get unencrypted private key
-openssl rsa -in $KEY_FILE_NAME -out $UNENCRYPTED_KEY_FILE_NAME -passin pass:$CERT_PASSWORD
+openssl rsa -in $KEY_FILE_NAME -out $UNENCRYPTED_KEY_FILE_NAME -passin pass:"$CERT_PASSWORD"
 
 # generate certificate signing request
-openssl req -new -key $KEY_FILE_NAME -passin pass:$CERT_PASSWORD -out $CSR_FILE_NAME -config $CONFIG_FILE_NAME
+openssl req -new -key $KEY_FILE_NAME -passin pass:"$CERT_PASSWORD" -out $CSR_FILE_NAME -config $CONFIG_FILE_NAME
 
 # generate certificate
-openssl x509 -req -days $EXPIRATION_IN_DAYS -in $CSR_FILE_NAME -CA $CA_FILE_NAME -CAkey $CA_KEY_FILE_NAME -CAcreateserial -passin pass:$CHAIN_PASSWORD -out $INTERMEDIATE_CERT_FILE_NAME -sha256 -extfile $CONFIG_FILE_NAME -extensions config_extensions
+openssl x509 -req -days $EXPIRATION_IN_DAYS -in $CSR_FILE_NAME -CA $CA_FILE_NAME -CAkey $CA_KEY_FILE_NAME -CAcreateserial -passin pass:"$CHAIN_PASSWORD" -out $INTERMEDIATE_CERT_FILE_NAME -sha256 -extfile $CONFIG_FILE_NAME -extensions config_extensions
 
 # generate pfx
-openssl pkcs12 -export -passin pass:$CERT_PASSWORD -password pass:$PFX_PASSWORD -out $INTERMEDIATE_CERT_PFX_FILE_NAME -inkey $KEY_FILE_NAME -in $INTERMEDIATE_CERT_FILE_NAME -CAfile $CA_FILE_NAME
+openssl pkcs12 -export -passin pass:"$CERT_PASSWORD" -password pass:"$PFX_PASSWORD" -out $INTERMEDIATE_CERT_PFX_FILE_NAME -inkey $KEY_FILE_NAME -in $INTERMEDIATE_CERT_FILE_NAME -CAfile $CA_FILE_NAME
 
 # extract pem from pfx
-openssl pkcs12 -password pass:$PFX_PASSWORD -in $INTERMEDIATE_CERT_PFX_FILE_NAME -out $INTERMEDIATE_PEM_CERT_FILE_NAME -nodes
+openssl pkcs12 -password pass:"$PFX_PASSWORD" -in $INTERMEDIATE_CERT_PFX_FILE_NAME -out $INTERMEDIATE_PEM_CERT_FILE_NAME -nodes
 
 if [ "$KEEP_CERTIFICATE_REQUEST_FILE" = "NO" ] ;
 then
